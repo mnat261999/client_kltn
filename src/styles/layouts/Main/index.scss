@@ -1,0 +1,42 @@
+.main-layout {
+  background-color: $background-color;
+
+  .ant-layout-header {
+    background-color: $white-color;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: $standard-size;
+    z-index: 10;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 3px 4px;
+
+    .logo {
+      width: 150px;
+      padding-right: 24px;
+    }
+
+    .ant-btn, .anticon {
+      color: $primary-color;
+    }
+  }
+  .ant-layout-content {
+    margin-top: $standard-size;
+    padding: 16px;
+
+    .ant-row {
+      max-width: 1000px;
+      margin: 0 auto;
+
+      .post-area {
+
+      }
+      .sub-area {
+        
+      }
+    }
+  }
+  .ant-layout-footer {
+    text-align: center;
+  }
+}

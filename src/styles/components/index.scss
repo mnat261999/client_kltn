@@ -1,0 +1,26 @@
+@import './CardTitle';
+@import './PostCard';
+@import './BannerCard';
+
+.main-container {
+    display: flex;
+    justify-content: center;
+  
+    & > .ant-row {
+      width: 100%;
+      padding: 0 200px;
+  
+      .post-area {
+        width: 650px;
+      }
+    
+      .sub-area {
+        width: 300px;
+      }
+    }
+  
+    .ant-card {
+      margin-bottom: 16px;
+    }
+  }
+  

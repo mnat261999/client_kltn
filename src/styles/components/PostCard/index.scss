@@ -1,0 +1,66 @@
+.post-card {
+  width: 100%;
+  background-color: $white-color;
+  border-radius: $radius;
+  margin-bottom: 24px; 
+  
+  .ant-card {
+    margin: 0;
+    border-radius: $radius;
+    
+    .ant-card-body {
+      padding-top: 0;
+      padding-bottom: 0;
+      
+      .ant-image {
+        margin-bottom: 3px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: black;
+        border-radius: $radius;
+
+        .ant-image-mask {
+          border-radius: $radius;
+        }
+
+        img {
+          object-fit: cover;
+          border-radius: $radius;
+        }
+      }
+    }
+    .ant-card-head {
+      border: none;
+    }
+    .ant-card-head-title {
+      .name {
+        font-weight: 500;
+      }
+      .date {
+        font-weight: normal;
+      }
+    }
+
+  }
+  
+  .actions, .comments {
+    padding: 10px 24px;
+  }
+
+  .actions {
+    .ant-btn-link {
+      padding: 0;
+    }
+  }
+
+  .comments {
+    width: 100%;
+    min-height: 16px;
+    padding-bottom: 16px;
+
+    .ant-input-affix-wrapper {
+      border-radius: 100px;
+    }
+  }
+}

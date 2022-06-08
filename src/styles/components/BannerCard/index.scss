@@ -1,0 +1,17 @@
+.banner-card {
+  .ant-card {
+    .ant-card-body {
+      padding: 0; 
+
+      .ant-image {
+        width: 100%;
+
+        .ant-image-img {
+          height: 200px;
+          width: 100%;
+          object-fit: cover;
+        }
+      }
+    }
+  }
+}
