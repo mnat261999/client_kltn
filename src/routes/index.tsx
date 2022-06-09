@@ -8,6 +8,7 @@ import SetPasswordPage from 'pages/SetPassword';
 import ExceptionPage from 'pages/Exception';
 
 import { AuthProvider } from 'contexts/Auth';
+import SignUpPage from 'pages/SignUp';
 
 const ContextRoute = ({ providers, ...nav }: NavigationType) => {
   let context = nav.page;
@@ -54,6 +55,16 @@ export default function Routes() {
             exact={true}
             providers={[AuthProvider]}
             key={'ContextRoute.Login'}
+          />
+        </Route>
+        <Route key={'Routes.SignUp'} path={'/sign-up'}>
+          <ContextRoute
+            title="Sign Up"
+            path="/sign-up"
+            page={<SignUpPage />}
+            exact={true}
+            providers={[AuthProvider]}
+            key={'ContextRoute.SignUp'}
           />
         </Route>
         <Route key={'Routes.SetPassword'} path={'/set-password'}>
