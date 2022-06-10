@@ -110,7 +110,7 @@ export default function SignUpPage() {
                 </Col>
                 <Col>
                   <Form.Item style={{ margin: 0 }}>
-                    <Button shape="round" type="primary" htmlType="submit" style={{ width: 150, height: 35 }}>
+                    <Button shape="round" type="primary" htmlType="submit" style={{ padding: '0 30px', height: 35 }}>
                       Sign Up
                     </Button>
                   </Form.Item>

@@ -1,5 +1,5 @@
-import { ReactNode, useContext } from 'react';
-import { Menu, Button, Avatar, Space, Badge, MenuProps, Dropdown } from 'antd';
+import { ReactNode, useContext, useState } from 'react';
+import { Menu, Button, Avatar, Space, Badge, MenuProps, Dropdown, Drawer, Form, Row, Col } from 'antd';
 
 import { Link, useHistory, useLocation } from 'react-router-dom';
 
@@ -8,6 +8,7 @@ import { AuthContext } from 'contexts/Auth';
 import {
   BellOutlined,
   CaretDownOutlined,
+  FormOutlined,
   LogoutOutlined,
   MessageOutlined,
   ProfileOutlined,
@@ -16,19 +17,25 @@ import {
 } from '@ant-design/icons';
 
 import { IconButtonConfig, ProfileButtonConfig } from './constants';
+import EditProfile from 'components/EditProfile';
 
 export default function MainLayout() {
   const location = useLocation();
   const history = useHistory();
+  
+  const [isEditProfile, setIsEditProfile] = useState(false);
 
   const authContext = useContext(AuthContext);
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     // message.info('Click on menu item.');
-    console.log('click', e);
     switch (e.key) {
       case 'profile': {
         history.push('/profile');
+        break;
+      }
+      case 'edit-profile': {
+        setIsEditProfile(true);
         break;
       }
       case 'settings': {
@@ -53,6 +60,11 @@ export default function MainLayout() {
             label: 'My Profile',
             key: 'profile',
             icon: <ProfileOutlined />,
+          },
+          {
+            label: 'Edit Profile',
+            key: 'edit-profile',
+            icon: <FormOutlined />,
           },
           {
             label: 'Settings',
@@ -107,6 +119,7 @@ export default function MainLayout() {
           </Space>
         </Button>
       </Dropdown>
+      <EditProfile visible={isEditProfile} onClose={() => setIsEditProfile(false)} />
     </Space>
   );
 }

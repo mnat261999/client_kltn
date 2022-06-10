@@ -3,31 +3,77 @@ import {
   FacebookFilled,
   FileImageOutlined,
   InstagramOutlined,
+  LoadingOutlined,
   TwitterOutlined,
   YoutubeOutlined,
 } from '@ant-design/icons';
-import { Avatar, Button, Card, Col, Image, message, Modal, Row, Typography, Upload, UploadProps } from 'antd';
-import { useState } from 'react';
+import {
+  Avatar,
+  Button,
+  Card,
+  Col,
+  Image,
+  message,
+  Modal,
+  notification,
+  Row,
+  Space,
+  Typography,
+  Upload,
+  UploadProps,
+} from 'antd';
+import { useEffect, useState } from 'react';
 
 const { Text } = Typography;
 const { Dragger } = Upload;
 
+const getBase64 = (img: any, callback: Function) => {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result));
+  reader.readAsDataURL(img);
+};
+
 const BannerCard = () => {
-  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [uploadedImage, setUploadedImage] = useState();
+  const [visible, setVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (!visible) {
+      setUploadedImage(undefined);
+    }
+  }, [visible]);
 
   const uploadImageProps: UploadProps = {
     name: 'file',
     multiple: false,
-    action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    showUploadList: false,
+    // action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+    customRequest: ({ file, onSuccess }: any) => {
+      setTimeout(() => {
+        onSuccess('ok');
+      }, 0);
+    },
     onChange(info: any) {
-      const { status } = info.file;
-      if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
+      if (info.file.status === 'uploading') {
+        setLoading(true);
+        return;
       }
-      if (status === 'done') {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === 'error') {
-        message.error(`${info.file.name} file upload failed.`);
+
+      if (info.file.status === 'done') {
+        // Get this url from response in real world.
+        getBase64(info.file.originFileObj, (url: any) => {
+          setLoading(false);
+          setUploadedImage(url);
+        });
+      }
+
+      if (info.file.status === 'error') {
+        setLoading(false);
+        notification.error({
+          message: 'Upload avatar failed!',
+          description: 'Upload avatar failed, please try again!',
+        });
       }
     },
     onDrop(e) {
@@ -72,7 +118,7 @@ const BannerCard = () => {
                 shape="circle"
                 style={{ position: 'absolute', bottom: 0, right: 0 }}
                 icon={<CameraOutlined />}
-                onClick={() => setIsUploadingImage(true)}
+                onClick={() => setVisible(true)}
               />
             </Col>
             <Col span={24} style={{ textAlign: 'center', fontWeight: 'bold' }}>
@@ -80,14 +126,36 @@ const BannerCard = () => {
             </Col>
           </Row>
         </div>
-        <Modal visible={isUploadingImage} onCancel={() => setIsUploadingImage(false)} title="Upload your avatar">
-          <Dragger {...uploadImageProps}>
-            <p className="ant-upload-drag-icon">
-              <FileImageOutlined />
-            </p>
-            <p className="ant-upload-text">Click or drag image to this area</p>
-            <p className="ant-upload-hint">Choose a good image for a great avatar</p>
-          </Dragger>
+        <Modal
+          destroyOnClose
+          visible={visible}
+          onCancel={() => setVisible(false)}
+          title="Upload your avatar"
+          cancelButtonProps={{
+            shape: 'round',
+            style: { padding: '0 30px', height: 35 },
+          }}
+          okText={'Upload'}
+          okButtonProps={{
+            style: { padding: '0 30px', height: 35 },
+            shape: 'round',
+            onClick: () => {
+              console.log('base64', uploadedImage);
+              setVisible(false);
+            },
+          }}
+        >
+          {uploadedImage ? (
+            <Row justify="center" style={{ textAlign: 'center', width: '100%' }}>
+              <Image src={uploadedImage} preview={false} />
+            </Row>
+          ) : (
+            <Dragger {...uploadImageProps} disabled={loading}>
+              <p className="ant-upload-drag-icon">{loading ? <LoadingOutlined /> : <FileImageOutlined />}</p>
+              <p className="ant-upload-text">Click or drag image to this area</p>
+              <p className="ant-upload-hint">Choose a good image for a great avatar</p>
+            </Dragger>
+          )}
         </Modal>
       </Card>
     </div>
