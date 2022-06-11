@@ -15,7 +15,7 @@ type StateType = {
   };
   login: Function;
   logout: Function;
-  refresh: Function;
+  // refresh: Function;
   changePassword: Function;
 };
 
@@ -26,7 +26,7 @@ const initialState: StateType = {
   },
   login: () => {},
   logout: () => {},
-  refresh: () => {},
+  // refresh: () => {},
   changePassword: () => {},
 };
 
@@ -43,12 +43,9 @@ export interface IChangePassword {
 }
 
 export interface IAuthResponse {
-  status: boolean;
+  success: boolean;
   msg: string;
-  message?: string;
   access_token?: string;
-  refresh_token?: string;
-  is_first_login?: string;
 }
 
 export const AuthContext = createContext(initialState);
@@ -60,37 +57,30 @@ export const AuthProvider = (props: { children?: ReactNode }) => {
   const login = async (payload: ILoginPayload): Promise<void> => {
     try {
       const { remember, ...user } = payload;
-      history.push('/');
 
       const response = await apiCaller(`${endpoint}/login`, {
         method: 'POST',
         data: user,
       });
+      
+      const { msg, success, access_token }: IAuthResponse = await response.data;
 
-      const { msg, access_token, refresh_token }: IAuthResponse = await response.data;
-      console.log(response.data);
-      if (msg === 'Login success!') {
+      if (success) {
         if (remember) localStorage.setItem('email', user.email);
         sessionStorage.setItem(tokenItemName, access_token ?? '');
-        sessionStorage.setItem(refreshTokenItemName, refresh_token ?? '');
-        notification.success({
-          message: msg,
-        });
-        // if (is_first_login) history.push('/set-password');
-        // else history.push('/');
+        history.push('/');
       } else {
         notification.error({
-          message: msg,
+          message: 'Login failed',
+          description: msg,
         });
-        return;
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       notification.error({
-        message: 'Login',
-        description: err.message ?? err,
+        message: 'Login failed',
+        description: err.msg ?? "Login failed, please try again!",
       });
-      console.log(err);
     }
   };
 
@@ -100,33 +90,33 @@ export const AuthProvider = (props: { children?: ReactNode }) => {
     history.push('/login');
   };
 
-  const refresh = async (): Promise<void> => {
-    try {
-      const response = await apiCaller(`${endpoint}/refresh`, {
-        method: 'POST',
-        data: {
-          refresh_token: sessionStorage.getItem(refreshTokenItemName),
-        },
-      });
+  // const refresh = async (): Promise<void> => {
+  //   try {
+  //     const response = await apiCaller(`${endpoint}/refresh`, {
+  //       method: 'POST',
+  //       data: {
+  //         refresh_token: sessionStorage.getItem(refreshTokenItemName),
+  //       },
+  //     });
 
-      const { status, message, access_token, refresh_token }: IAuthResponse = await response.data;
+  //     const { success, msg, access_token, refresh_token }: IAuthResponse = await response.data;
 
-      if (status) {
-        sessionStorage.setItem(tokenItemName, access_token ?? '');
-        sessionStorage.setItem(refreshTokenItemName, refresh_token ?? '');
+  //     if (success) {
+  //       sessionStorage.setItem(tokenItemName, access_token ?? '');
+  //       sessionStorage.setItem(refreshTokenItemName, refresh_token ?? '');
 
-        history.push('/');
-      } else {
-        throw new Error(message);
-      }
-      //eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      notification.error({
-        message: 'Login',
-        description: err.message ?? err,
-      });
-    }
-  };
+  //       history.push('/');
+  //     } else {
+  //       throw new Error(msg);
+  //     }
+  //     //eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   } catch (err: any) {
+  //     notification.error({
+  //       message: 'Login',
+  //       description: err.message ?? err,
+  //     });
+  //   }
+  // };
 
   const changePassword = async (payload: IChangePassword): Promise<void> => {
     try {
@@ -138,12 +128,12 @@ export const AuthProvider = (props: { children?: ReactNode }) => {
         },
       });
 
-      const { status, message }: IAuthResponse = await response.data;
+      const { access_token, success, msg }: IAuthResponse = await response.data;
 
-      if (status) {
+      if (success) {
         history.push('/');
       } else {
-        throw new Error(message);
+        throw new Error(msg);
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
@@ -163,7 +153,7 @@ export const AuthProvider = (props: { children?: ReactNode }) => {
         },
         login,
         logout,
-        refresh,
+        // refresh,
         changePassword,
       }}
     >

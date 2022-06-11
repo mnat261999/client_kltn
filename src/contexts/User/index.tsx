@@ -114,35 +114,35 @@ export const UserProvider = (props: { children?: ReactNode }) => {
     }
   };
 
-  const update = async (guid: string, payload: IUser) => {
-    try {
-      const response = await apiCaller(`${endpoint}/${guid}`, {
-        method: 'PUT',
-        data: payload,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+  // const update = async (guid: string, payload: IUser) => {
+  //   try {
+  //     const response = await apiCaller(`${endpoint}/${guid}`, {
+  //       method: 'PUT',
+  //       data: payload,
+  //       headers: {
+  //         Authorization: `Bearer ${accessToken}`,
+  //       },
+  //     });
 
-      const { status, message } = await response.data;
+  //     const { status, message } = await response.data;
 
-      if (status) {
-        notification.success({
-          message: 'Update a user',
-          description: message ?? 'Successfully!',
-        });
-        get({ page });
-      } else {
-        throw new Error(message);
-      }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      notification.error({
-        message: 'Update a user',
-        description: err.message ?? err,
-      });
-    }
-  };
+  //     if (status) {
+  //       notification.success({
+  //         message: 'Update a user',
+  //         description: message ?? 'Successfully!',
+  //       });
+  //       get({ page });
+  //     } else {
+  //       throw new Error(message);
+  //     }
+  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   } catch (err: any) {
+  //     notification.error({
+  //       message: 'Update a user',
+  //       description: err.message ?? err,
+  //     });
+  //   }
+  // };
 
   return (
     <UserContext.Provider

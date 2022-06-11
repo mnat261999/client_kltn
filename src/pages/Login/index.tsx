@@ -4,6 +4,7 @@ import { Card, Row, Form, Input, Checkbox, Button, Typography, Col, Divider, Ima
 import { AuthContext } from 'contexts/Auth';
 import { Link } from 'react-router-dom';
 import { getRandomInt } from 'utils/mathUtils';
+import { useForm } from 'antd/lib/form/Form';
 
 const { Title, Text } = Typography;
 
@@ -14,10 +15,12 @@ interface ILogin {
 }
 
 export default function LoginPage() {
+  const [form] = useForm();
   const authContext = useContext(AuthContext);
 
-  const onFinish = (values: ILogin) => {
-    authContext.login(values);
+  const onFinish = async (values: ILogin) => {
+    form.validateFields();
+    await authContext.login(values);
   };
 
   return (
@@ -55,17 +58,21 @@ export default function LoginPage() {
               </Col>
             </Row>
             <Form
+              form={form}
               name="basic"
               layout={'vertical'}
-              initialValues={{ remember: true }}
+              initialValues={{ remember: true, email: localStorage.getItem('email') }}
               onFinish={onFinish}
               // onFinishFailed={onFinishFailed}
               autoComplete="off"
             >
               <Form.Item
-                label="Username"
+                label="Email"
                 name="email"
-                rules={[{ required: true, message: 'Please input your username!' }]}
+                rules={[
+                  { required: true, message: 'Please input your username!' },
+                  { type: 'email', message: 'Email format incorrect!'}
+                ]}
               >
                 <Input style={{ borderRadius: '20px', height: 40 }} />
               </Form.Item>

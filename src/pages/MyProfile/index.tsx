@@ -1,5 +1,6 @@
 import { Card, Col, Row } from "antd";
 import BannerCard from "components/BannerCard";
+import CreatePostCard from "components/CreatePostCard";
 import PostCard from "components/PostCard";
 
 export default function MyProfile() {
@@ -10,6 +11,7 @@ export default function MyProfile() {
           <BannerCard />
         </Col>
         <Col span={24} className="post-area">
+          <CreatePostCard />
           <PostCard />
           <PostCard />
         </Col>

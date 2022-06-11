@@ -26,7 +26,7 @@ const redirectToLoginPage = () => {
 const getNewToken = async () => {
   try {
     const refreshToken = sessionStorage.getItem(refreshTokenItemName);
-    const res = await axios(`${beFullDomain}/user/refresh_token`, {
+    const res = await axios(`${beFullDomain}/users/refreshToken`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -35,9 +35,9 @@ const getNewToken = async () => {
       data: { refresh_token: refreshToken },
     });
 
-    const { status, access_token, refresh_token } = res.data;
+    const { status: success, access_token, refresh_token } = res.data;
 
-    if (status) {
+    if (success) {
       sessionStorage.setItem(tokenItemName, access_token ?? '');
       sessionStorage.setItem(refreshTokenItemName, refresh_token ?? '');
 
@@ -61,30 +61,28 @@ apiCaller.interceptors.response.use(
     } = error;
 
     const isAuthenticated = !!config.headers.Authorization;
-    console.log('hi');
+
     if (isAuthenticated) {
       switch (status) {
-        case 401:
-          {
-            const refreshToken = sessionStorage.getItem(refreshTokenItemName);
-            if (refreshToken) {
-              try {
-                const newToken = await getNewToken();
+        case 401: {
+          const refreshToken = sessionStorage.getItem(refreshTokenItemName);
+          if (refreshToken) {
+            try {
+              const newToken = await getNewToken();
 
-                config.headers['Authorization'] = `Bearer ${newToken}`;
-                return apiCaller(config);
-              } catch (err) {
-                redirectToLoginPage();
-              }
-            } else {
+              config.headers['Authorization'] = `Bearer ${newToken}`;
+              return apiCaller(config);
+            } catch (err) {
               redirectToLoginPage();
             }
+          } else {
+            redirectToLoginPage();
           }
-          break;
+        }
       }
     }
 
-    // throw new Error(data.message);
+    throw new Error(data.msg);
   },
 );
 
