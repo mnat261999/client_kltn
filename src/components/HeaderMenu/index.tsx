@@ -22,7 +22,7 @@ import EditProfile from 'components/EditProfile';
 export default function MainLayout() {
   const location = useLocation();
   const history = useHistory();
-  
+
   const [isEditProfile, setIsEditProfile] = useState(false);
 
   const authContext = useContext(AuthContext);
@@ -43,7 +43,7 @@ export default function MainLayout() {
         break;
       }
       case 'logout': {
-        history.push('/logout');
+        authContext.logout();
         break;
       }
       default:

@@ -8,7 +8,7 @@ import { getRandomInt } from 'utils/mathUtils';
 const { Title, Text } = Typography;
 
 interface ILogin {
-  username: string;
+  email: string;
   password: string;
   remember: boolean;
 }
@@ -30,16 +30,14 @@ export default function LoginPage() {
         background: '#fff',
       }}
     >
-      <Row
-        style={{ width: '100%', height: '100%' }}
-      >
+      <Row style={{ width: '100%', height: '100%' }}>
         <Col span={16} style={{ paddingTop: 100, left: '10%' }}>
-          <div style={{position: 'absolute', left: -55, top: -20}}>
-            <Text style={{ fontSize: 200, margin: 0, fontFamily: 'auto', color: "rgba(200, 200, 200, 0.2)" }}>❝</Text>
+          <div style={{ position: 'absolute', left: -55, top: -20 }}>
+            <Text style={{ fontSize: 200, margin: 0, fontFamily: 'auto', color: 'rgba(200, 200, 200, 0.2)' }}>❝</Text>
           </div>
-          <div style={{position: 'absolute'}}>
-            <Title style={{ margin: 0, color: "rgba(90, 90, 90, 1)" }}>Pets also the medicine for the soul,</Title>
-            <Title style={{ margin: 0, color: "rgba(90, 90, 90, 1)" }}>let's share together</Title>
+          <div style={{ position: 'absolute' }}>
+            <Title style={{ margin: 0, color: 'rgba(90, 90, 90, 1)' }}>Pets also the medicine for the soul,</Title>
+            <Title style={{ margin: 0, color: 'rgba(90, 90, 90, 1)' }}>let's share together</Title>
           </div>
         </Col>
         <Col span={8}>
@@ -66,7 +64,7 @@ export default function LoginPage() {
             >
               <Form.Item
                 label="Username"
-                name="username"
+                name="email"
                 rules={[{ required: true, message: 'Please input your username!' }]}
               >
                 <Input style={{ borderRadius: '20px', height: 40 }} />

@@ -4,7 +4,7 @@ import { notification } from 'antd';
 
 import apiCaller from 'utils/apiCaller';
 
-const endpoint = '/auth';
+const endpoint = '/user';
 const tokenItemName = process.env.REACT_APP_TOKEN_ITEM_NAME ?? 'access_token';
 const refreshTokenItemName = process.env.REACT_APP_REFRESH_TOKEN_ITEM_NAME ?? 'refresh_token';
 
@@ -31,7 +31,7 @@ const initialState: StateType = {
 };
 
 export interface ILoginPayload {
-  username: string;
+  email: string;
   password: string;
   remember: boolean;
 }
@@ -44,6 +44,7 @@ export interface IChangePassword {
 
 export interface IAuthResponse {
   status: boolean;
+  msg: string;
   message?: string;
   access_token?: string;
   refresh_token?: string;
@@ -58,41 +59,38 @@ export const AuthProvider = (props: { children?: ReactNode }) => {
 
   const login = async (payload: ILoginPayload): Promise<void> => {
     try {
-      // const { 
-      //   remember, 
-      //   ...user
-      // } = payload;
+      const { remember, ...user } = payload;
       history.push('/');
 
-      // const response = await apiCaller(`${endpoint}/login`, {
-      //   method: 'POST',
-      //   data: user,
-      // });
+      const response = await apiCaller(`${endpoint}/login`, {
+        method: 'POST',
+        data: user,
+      });
 
-      // const {
-      //   status,
-      //   message,
-      //   access_token,
-      //   refresh_token,
-      //   is_first_login,
-      // }: IAuthResponse = await response.data;
-
-      // if (status) {
-      //   if (remember) localStorage.setItem('username', user.username);
-      //   sessionStorage.setItem(tokenItemName, access_token ?? '');
-      //   sessionStorage.setItem(refreshTokenItemName, refresh_token ?? '');
-
-      //   if (is_first_login) history.push('/set-password');
-      //   else history.push('/');
-      // } else {
-      //   throw new Error(message);
-      // }
+      const { msg, access_token, refresh_token }: IAuthResponse = await response.data;
+      console.log(response.data);
+      if (msg === 'Login success!') {
+        if (remember) localStorage.setItem('email', user.email);
+        sessionStorage.setItem(tokenItemName, access_token ?? '');
+        sessionStorage.setItem(refreshTokenItemName, refresh_token ?? '');
+        notification.success({
+          message: msg,
+        });
+        // if (is_first_login) history.push('/set-password');
+        // else history.push('/');
+      } else {
+        notification.error({
+          message: msg,
+        });
+        return;
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       notification.error({
         message: 'Login',
         description: err.message ?? err,
       });
+      console.log(err);
     }
   };
 
@@ -121,7 +119,7 @@ export const AuthProvider = (props: { children?: ReactNode }) => {
       } else {
         throw new Error(message);
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      //eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       notification.error({
         message: 'Login',

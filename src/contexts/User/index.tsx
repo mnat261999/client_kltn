@@ -13,9 +13,7 @@ type StateType = {
     page: number;
     total: number;
   };
-  get: Function;
-  create: Function;
-  update: Function;
+  getUserLogin: Function;
 };
 
 const initialState: StateType = {
@@ -24,18 +22,19 @@ const initialState: StateType = {
     page: 1,
     total: 0,
   },
-  get: () => {},
-  create: () => {},
-  update: () => {},
+  getUserLogin: () => {},
 };
 
 export interface IUser {
-  guid: string;
-  first_Name: string;
-  last_Name: string;
+  _id: string;
+  fullname: string;
+  username: string;
   email: string;
   phone: string;
+  gender: string;
   address: string;
+  dob: Date;
+  website: string;
 }
 
 export const UserContext = createContext(initialState);
@@ -56,57 +55,22 @@ export const UserProvider = (props: { children?: ReactNode }) => {
 
   const accessToken = sessionStorage.getItem(tokenItemName);
 
-  const mockDataLength = 3;
-  const mockData: IUserResponse = {
-    data: [
-      {
-        guid: '1',
-        first_Name: 'First Name 1',
-        last_Name: 'Last Name 1',
-        email: '1@email.com',
-        phone: '+84000001',
-        address: '1 Road ABC',
-      },
-      {
-        guid: '2',
-        first_Name: 'First Name 2',
-        last_Name: 'Last Name 2',
-        email: '2@email.com',
-        phone: '+84000002',
-        address: '2 Road ABC',
-      },
-      {
-        guid: '3',
-        first_Name: 'First Name 3',
-        last_Name: 'Last Name 3',
-        email: '3@email.com',
-        phone: '+84000003',
-        address: '3 Road ABC',
-      },
-    ],
-    total: mockDataLength,
-    status: true,
-    message: 'Successfully!',
-  };
-
-  const get = async (payload: IQuery): Promise<void> => {
+  const getUserLogin = async (payload: IQuery): Promise<void> => {
     try {
-      // const response = await apiCaller(endpoint, {
-      //   method: 'GET',
-      //   params: payload,
-      //   headers: {
-      //     Authorization: `Bearer ${accessToken}`,
-      //   },
-      // });
+      const response = await apiCaller(`${endpoint}/login`, {
+        method: 'GET',
+        params: payload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-      // const {data, total, status, message}: IUserResponse = await response.data;
-      const { data, total, status, message }: IUserResponse = mockData;
+      const { data, total, status, message }: IUserResponse = await response.data;
+      // const { data, total, status, message }: IUserResponse = mockData;
 
       if (status) {
         if (data && data.constructor === Array) {
           setData(data);
-          setTotal(total ?? 0);
-          setPage(page ?? 1);
         }
       } else {
         throw new Error(message);
@@ -137,7 +101,7 @@ export const UserProvider = (props: { children?: ReactNode }) => {
           message: 'Create a user',
           description: message ?? 'Successfully!',
         });
-        get({ page });
+        getUserLogin({ page });
       } else {
         throw new Error(message);
       }
@@ -188,9 +152,7 @@ export const UserProvider = (props: { children?: ReactNode }) => {
           page,
           total,
         },
-        get,
-        create,
-        update,
+        getUserLogin,
       }}
     >
       {props.children}

@@ -26,7 +26,7 @@ const redirectToLoginPage = () => {
 const getNewToken = async () => {
   try {
     const refreshToken = sessionStorage.getItem(refreshTokenItemName);
-    const res = await axios(`${beFullDomain}/auth/refresh`, {
+    const res = await axios(`${beFullDomain}/user/refresh_token`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -61,28 +61,30 @@ apiCaller.interceptors.response.use(
     } = error;
 
     const isAuthenticated = !!config.headers.Authorization;
-
+    console.log('hi');
     if (isAuthenticated) {
       switch (status) {
-        case 401: {
-          const refreshToken = sessionStorage.getItem(refreshTokenItemName);
-          if (refreshToken) {
-            try {
-              const newToken = await getNewToken();
+        case 401:
+          {
+            const refreshToken = sessionStorage.getItem(refreshTokenItemName);
+            if (refreshToken) {
+              try {
+                const newToken = await getNewToken();
 
-              config.headers['Authorization'] = `Bearer ${newToken}`;
-              return apiCaller(config);
-            } catch (err) {
+                config.headers['Authorization'] = `Bearer ${newToken}`;
+                return apiCaller(config);
+              } catch (err) {
+                redirectToLoginPage();
+              }
+            } else {
               redirectToLoginPage();
             }
-          } else {
-            redirectToLoginPage();
           }
-        }
+          break;
       }
     }
 
-    throw new Error(data.message);
+    // throw new Error(data.message);
   },
 );
 
